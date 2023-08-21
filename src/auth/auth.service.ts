@@ -9,6 +9,7 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthDto } from './dto/auth.dto';
+import mongoose, { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,20 @@ export class AuthService {
     const tokens = await this.getTokens(newUser._id, newUser.nickname);
     await this.updateUserLogInStatus(newUser.id);
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
-    return tokens;
+
+    const { firstname, lastname, gender, age, isLoggedIn, lastLogggedInAt } = newUser;
+
+    return {
+      userInfo: {
+        firstname, 
+        lastname, 
+        gender, 
+        age, 
+        isLoggedIn, 
+        lastLogggedInAt,
+        tokens
+      }
+    };
   }
 
   async signIn(data: AuthDto) {
@@ -52,7 +66,27 @@ export class AuthService {
     const tokens = await this.getTokens(user._id, user.nickname);
     await this.updateUserLogInStatus(user.id);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
-    return tokens;
+
+    const { firstname, lastname, gender, age, isLoggedIn, lastLogggedInAt } = user;
+    return {
+      userInfo: {
+        firstname, 
+        lastname, 
+        gender, 
+        age, 
+        isLoggedIn, 
+        lastLogggedInAt,
+        tokens
+      }
+    };
+  }
+
+  async getLogStatus(nickname: string) {
+     const user = await this.usersService.findByNickName(nickname);
+     if (!user) {
+      throw new BadRequestException('User doesn\'t exist!');
+     }
+     return user?.isLoggedIn;
   }
 
   async logout(userId: string) {
@@ -81,12 +115,14 @@ export class AuthService {
 
   async updateUserLogInStatus(userId: string) {
     await this.usersService.update(userId, {
+      isLoggedIn: true,
       lastLogggedInAt: new Date().toISOString()
     })
   }
 
-  async updateUserLogoutStatus(userId) {
+  async updateUserLogoutStatus(userId: string) {
     await this.usersService.update(userId, {
+      isLoggedIn: false,
       lastLogggedOutAt: new Date().toISOString()
     })
   }

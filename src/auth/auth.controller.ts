@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
@@ -23,18 +23,25 @@ export class AuthController {
   }
 
   @Version('1')
-  @Get('logout')
   @UseGuards(AccessTokenGuard)
+  @Get('logout')
   logout(@Req() req: Request) {
     this.authService.logout(req.user['sub']);
   }
 
   @Version('1')
-  @Get('refresh')
   @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
   refreshTokens(@Req() req: Request) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Version('1')
+  @Get('getLogStatus/:nickname')
+  async getLogStatus(@Param('nickname') nickname: string) {
+     const status = await this.authService.getLogStatus(nickname);
+     return { status };
   }
 }

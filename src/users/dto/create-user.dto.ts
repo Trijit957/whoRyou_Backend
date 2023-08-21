@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsBoolean, IsDefined, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
 
@@ -44,4 +44,8 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   lastLogggedOutAt?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isLoggedIn: boolean;
 }

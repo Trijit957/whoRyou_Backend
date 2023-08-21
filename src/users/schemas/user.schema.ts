@@ -34,6 +34,9 @@ export class User {
 
   @Prop()
   refreshToken: string;
+
+  @Prop()
+  isLoggedIn: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
