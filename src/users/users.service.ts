@@ -19,6 +19,7 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<UserDocument> {
+    console.log("id", id)
     return await this.userModel.findById(new Types.ObjectId(id));
   }
 

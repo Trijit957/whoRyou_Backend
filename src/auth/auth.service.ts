@@ -41,16 +41,18 @@ export class AuthService {
     await this.updateUserLogInStatus(newUser.id);
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
-    const { firstname, lastname, gender, age, isLoggedIn, lastLogggedInAt } = newUser;
+    const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = newUser;
 
     return {
       userInfo: {
         firstname, 
         lastname, 
+        nickname,
         gender, 
         age, 
         isLoggedIn, 
         lastLogggedInAt,
+        lastLogggedOutAt,
         tokens
       }
     };
@@ -67,15 +69,17 @@ export class AuthService {
     await this.updateUserLogInStatus(user.id);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
 
-    const { firstname, lastname, gender, age, isLoggedIn, lastLogggedInAt } = user;
+    const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
     return {
       userInfo: {
         firstname, 
-        lastname, 
+        lastname,
+        nickname, 
         gender, 
         age, 
         isLoggedIn, 
         lastLogggedInAt,
+        lastLogggedOutAt,
         tokens
       }
     };

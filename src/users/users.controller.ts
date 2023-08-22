@@ -23,34 +23,34 @@ export class UsersController {
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Post('createUser')
+  public async create(@Body() createUserDto: CreateUserDto) {
+    return await this.usersService.create(createUserDto);
   }
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get('getAllUsers')
+  public async findAll() {
+    return await this.usersService.findAll();
   }
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  @Get('getUserById/:id')
+  public async findById(@Param('id') id: string) {
+    return await this.usersService.findById(id);
   }
 
   @Version('1')
   @Get('getUserByNickname/:nickname')
-  async findByNickname(@Param('nickname') nickname: string) {
+  public async findByNickname(@Param('nickname') nickname: string) {
     return await this.usersService.findByNickName(nickname);
   }
 
   @Version('1')
   @Get('nicknameExistance/:nickname')
-  async isNickNameExists(@Param('nickname') nickname: string) {
+  public async isNickNameExists(@Param('nickname') nickname: string) {
       const user = await this.usersService.findByNickName(nickname);
       return {
         status: user ? true : false
@@ -59,23 +59,33 @@ export class UsersController {
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Get('info')
-  async getUserInfo(@Req() req: Request) {
+  @Get('getUserInfo')
+  public async getUserInfo(@Req() req: Request) {
       const userId = req.user['sub'];
       const user = await this.usersService.findById(userId);
-      return user;
+      const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
+      return {
+        firstname,
+        lastname,
+        nickname,
+        gender,
+        age,
+        isLoggedIn,
+        lastLogggedInAt,
+        lastLogggedOutAt
+      }
   }
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Patch(':id')
+  @Patch('updateUserById/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
-  @Delete(':id')
+  @Delete('deleteUserById/:id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
