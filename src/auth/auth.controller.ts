@@ -5,6 +5,7 @@ import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { ExtendedRequest } from './auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -12,35 +13,37 @@ export class AuthController {
 
   @Version('1')
   @Post('signup')
-  signup(@Body() createUserDto: CreateUserDto) {
-     return this.authService.signUp(createUserDto);
+  public async signup(@Body() createUserDto: CreateUserDto) {
+     return await this.authService.signUp(createUserDto);
   }
 
   @Version('1')
   @Post('signin')
-  signin(@Body() data: AuthDto) {
-    return this.authService.signIn(data);
+  public async signin(@Body() data: AuthDto) {
+    return await this.authService.signIn(data);
   }
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
   @Get('logout')
-  logout(@Req() req: Request) {
-    this.authService.logout(req.user['sub']);
+  public async logout(@Req() req: Request) {
+    await this.authService.logout(req.user['sub']);
   }
-
+ 
   @Version('1')
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
-  refreshTokens(@Req() req: Request) {
+  public async refreshTokens(@Req() req: ExtendedRequest) {
+    console.log(req.user);
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
-    return this.authService.refreshTokens(userId, refreshToken);
+    return await this.authService.refreshTokens(userId, refreshToken);
   }
 
   @Version('1')
+  @UseGuards(AccessTokenGuard)
   @Get('getLogStatus/:nickname')
-  async getLogStatus(@Param('nickname') nickname: string) {
+  public async getLogStatus(@Param('nickname') nickname: string) {
      const status = await this.authService.getLogStatus(nickname);
      return { status };
   }
