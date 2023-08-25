@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
+
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {

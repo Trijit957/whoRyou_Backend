@@ -7,6 +7,7 @@ import { config } from './config/config';
 import { ConfigProps } from './config/config.interface';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 
 enum EnvironmentEnum {
   DEVELOPMENT = 'development',
@@ -31,7 +32,8 @@ enum EnvironmentEnum {
       }
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],

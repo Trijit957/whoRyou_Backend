@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -8,34 +8,34 @@ export type UserDocument = User & Document;
   versionKey: false
 })
 export class User {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   firstname: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   lastname: string;
 
-  @Prop({ required: true, unique: true, minlength: 5, maxlength: 20 })
+  @Prop({ type: String, required: true, unique: true, minlength: 5, maxlength: 20 })
   nickname: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   age: number;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   gender: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   password: string;
 
-  @Prop()
+  @Prop({ type: Date })
   lastLogggedInAt: Date;
 
-  @Prop()
+  @Prop({ type: Date })
   lastLogggedOutAt: Date;
 
-  @Prop()
+  @Prop({ type: String })
   refreshToken: string;
 
-  @Prop()
+  @Prop({ type: Boolean })
   isLoggedIn: boolean;
 }
 
