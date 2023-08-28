@@ -93,7 +93,6 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    this.usersService.update(userId, { refreshToken: null });
     await this.updateUserLogoutStatus(userId);
   }
 
@@ -139,6 +138,7 @@ export class AuthService {
   async updateUserLogoutStatus(userId: string) {
     await this.usersService.update(userId, {
       isLoggedIn: false,
+      refreshToken: null,
       lastLogggedOutAt: new Date().toISOString()
     })
   }
