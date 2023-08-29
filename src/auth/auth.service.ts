@@ -40,10 +40,11 @@ export class AuthService {
     await this.updateUserLogInStatus(newUser.id);
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
-    const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = newUser;
+    const { _id, firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = newUser;
 
     return {
       userInfo: {
+        id: _id,
         firstname, 
         lastname, 
         nickname,
@@ -68,9 +69,10 @@ export class AuthService {
     await this.updateUserLogInStatus(user.id);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
 
-    const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
+    const { _id, firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
     return {
       userInfo: {
+        id: _id,
         firstname, 
         lastname,
         nickname, 
@@ -108,9 +110,10 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.nickname);
     await this.updateUserLogInStatus(user.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
-    const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
+    const { _id, firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
     return {
       userInfo: {
+        id: _id,
         firstname, 
         lastname,
         nickname, 

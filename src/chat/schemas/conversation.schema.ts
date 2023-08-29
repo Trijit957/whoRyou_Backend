@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { UserSchema } from 'src/users/schemas/user.schema';
-import { LastMessageInfoInterface } from '../chat.interface';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { LastMessageInfoInterface, MessageStatusEnum } from '../chat.interface';
 
 export type ConversationDocument = Conversation & Document;
 
@@ -17,7 +17,7 @@ export class LastMessage {
     time: string;
 
     @Prop({ type: String, required: true})
-    status: string;
+    status: MessageStatusEnum;
 
 }
 
@@ -29,8 +29,8 @@ const LastMessageSchema = SchemaFactory.createForClass(LastMessage);
 })
 export class Conversation {
   
-  @Prop({ type: [{ type: Types.ObjectId, ref: UserSchema }], required: true })
-  participants: Array<string>;
+  @Prop({ type: [{ type: Types.ObjectId, ref: User.name }], required: true })
+  participants: Array<Types.ObjectId>;
 
   @Prop({ type: LastMessageSchema, required: true })
   lastMessageInfo: LastMessageInfoInterface;

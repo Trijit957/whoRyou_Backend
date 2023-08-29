@@ -1,4 +1,5 @@
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { MessageStatusEnum } from "../chat.interface";
 
 
 export class CreateChatDto {
@@ -28,5 +29,5 @@ export class CreateChatDto {
    @IsDefined()
    @IsNotEmpty()
    @IsString()
-   status: string;
+   status: MessageStatusEnum;
 }

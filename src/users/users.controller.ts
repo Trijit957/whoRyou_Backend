@@ -64,8 +64,9 @@ export class UsersController {
   public async getUserInfo(@Req() req: Request) {
       const userId = req.user['sub'];
       const user = await this.usersService.findById(userId);
-      const { firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
+      const { _id, firstname, lastname, nickname, gender, age, isLoggedIn, lastLogggedInAt, lastLogggedOutAt } = user;
       return {
+        id: _id,
         firstname,
         lastname,
         nickname,
