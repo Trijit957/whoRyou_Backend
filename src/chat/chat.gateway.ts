@@ -4,7 +4,11 @@ import { Socket } from 'socket.io';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatService } from './chat.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*'
+  }
+})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() wss: Server;
@@ -29,10 +33,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
      this.wss.emit('CONVERSATIONS', conversations);
   }
 
-  @SubscribeMessage('createChat')
-  async create(@MessageBody() createChatDto: CreateChatDto) {
-    console.log("createChatDto", createChatDto);
-    this.wss.emit('receiveMessage', createChatDto);
-    await this.chatsService.createChat(createChatDto);
+  @SubscribeMessage('CREATE_CHAT')
+  async create(@MessageBody() createdChat: CreateChatDto) {
+    console.log("createChatDto", createdChat);
+
+    createdChat = { ...createdChat, time: new Date().toISOString() }
+    // emit event for chatbox update
+    this.wss.emit('CHAT', createdChat);
+    // save chat in database (creating or updating corresponding conversation)
+    let x = await this.chatsService.createChat(createdChat);
+    // getting the info of conversation
+    const conversations = await this.chatsService.getConversationsByUserId(createdChat?.senderId);
+    // emit the event for conversation
+    this.wss.emit('CONVERSATIONS', conversations);
   }
 }

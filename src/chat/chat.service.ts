@@ -12,7 +12,7 @@ export class ChatService {
     constructor(
         @InjectModel(Chat.name) private chatModel: Model<ChatDocument>,
         @InjectModel(Conversation.name) private conversationModel: Model<ConversationDocument>,
-        @InjectConnection() private readonly connection: Connection,
+        @InjectConnection() private readonly connection: Connection
     ) {}
 
     public async createChat(chatInfo: CreateChatDto) {
@@ -25,37 +25,41 @@ export class ChatService {
            const conversation = await this.findConversationBySenderId(chatInfo.senderId, chatInfo.receiverId);
            if(conversation) {
              console.log("find conversation");
-             this.createChatInfo({
+             const createdChat = await this.createChatInfo({
                 conversationId: conversation._id,
                 senderId: new Types.ObjectId(chatInfo.senderId),
                 receiverId: new Types.ObjectId(chatInfo.receiverId),
                 message: chatInfo.message,
-                status: chatInfo.status
+                status: chatInfo.status,
+                ...(chatInfo.time && { time: chatInfo.time })
              })
-              .then((createdChat) => {
-                this.updateLastMessageInConversation(conversation._id, { 
+            //   .then(async (createdChat) => {
+                return await this.updateLastMessageInConversation(conversation._id, { 
                     message: chatInfo.message,
                     status: chatInfo.status,
                     time: createdChat.time
                 });
-              });
+            //   });
            } else {
              console.log('Could not find conversation!');
-             this.createConversation({
+             console.log("chatInfo before create conversation", chatInfo);
+             const createdConversation = await this.createConversation({
                 participants: [new Types.ObjectId(chatInfo.senderId), new Types.ObjectId(chatInfo.receiverId)],
                 lastMessageInfo: {
                     message: chatInfo.message,
                     status: chatInfo.status
                 }
-             }).then((createdConversation) => {
-                 this.createChatInfo({
+             })
+            //  .then(async (createdConversation) => {
+                 return await this.createChatInfo({
                     conversationId : createdConversation._id,
                     senderId: new Types.ObjectId(chatInfo.senderId),
                     receiverId: new Types.ObjectId(chatInfo.receiverId),
                     message: chatInfo.message,
-                    status: chatInfo.status
+                    status: chatInfo.status,
+                    ...(chatInfo.time && { time: chatInfo.time })
                  });
-             })
+            //  })
 
            }
         } catch(error) {
@@ -98,6 +102,6 @@ export class ChatService {
         return await this.chatModel.find({  
             senderId: new Types.ObjectId(senderId), 
             receiverId: new Types.ObjectId(receiverId)
-        }).sort({ time: 'desc' });
+        }).sort({ time: 'asc' });
     }
 }
