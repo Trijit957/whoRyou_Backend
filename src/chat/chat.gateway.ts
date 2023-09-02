@@ -5,9 +5,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
-  cors: {
-    origin: 'https://staging-whoryou.cyclic.cloud'
-  }
+  cors: true
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
