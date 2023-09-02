@@ -7,9 +7,9 @@ import { ChatService } from './chat.service';
 @WebSocketGateway({
   cors: {
     origin: '*',
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ['Access-Control-Allow-Origin'],
-    credentials: false
+  //  methods: ["GET", "POST", "PUT", "DELETE"],
+   // allowedHeaders: ['Access-Control-Allow-Origin'],
+  //  credentials: false
   },
   allowEIO3: true,
   // : true,
