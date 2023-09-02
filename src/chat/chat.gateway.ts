@@ -11,7 +11,7 @@ import { ChatService } from './chat.service';
     allowedHeaders: ['Access-Control-Allow-Origin'],
     credentials: false
   },
-  transports: ['websocket'],
+  transports: ['websocket', 'polling'],
   allowEIO3: true
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
