@@ -5,7 +5,12 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
-  cors: true
+  cors: {
+    origin: '*',
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ['Access-Control-Allow-Origin'],
+    credentials: false
+  }
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
