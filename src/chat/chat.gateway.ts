@@ -10,7 +10,9 @@ import { ChatService } from './chat.service';
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ['Access-Control-Allow-Origin'],
     credentials: false
-  }
+  },
+  transports: ['websocket'],
+  allowEIO3: true
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
