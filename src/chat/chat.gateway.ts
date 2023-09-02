@@ -6,14 +6,8 @@ import { ChatService } from './chat.service';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
-  //  methods: ["GET", "POST", "PUT", "DELETE"],
-   // allowedHeaders: ['Access-Control-Allow-Origin'],
-  //  credentials: false
-  },
-  allowEIO3: true,
-  // : true,
-  transports: ['websocket']
+    origin: '*'
+  }
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
