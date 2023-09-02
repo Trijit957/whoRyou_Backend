@@ -16,7 +16,6 @@ export class ChatService {
     ) {}
 
     public async createChat(chatInfo: CreateChatDto) {
-        console.log(chatInfo);
 
         const session = await this.connection.startSession();
         session.startTransaction();
@@ -24,7 +23,6 @@ export class ChatService {
         try {
            const conversation = await this.findConversationBySenderId(chatInfo.senderId, chatInfo.receiverId);
            if(conversation) {
-             console.log("find conversation");
              const createdChat = await this.createChatInfo({
                 conversationId: conversation._id,
                 senderId: new Types.ObjectId(chatInfo.senderId),
@@ -33,16 +31,12 @@ export class ChatService {
                 status: chatInfo.status,
                 ...(chatInfo.time && { time: chatInfo.time })
              })
-            //   .then(async (createdChat) => {
                 return await this.updateLastMessageInConversation(conversation._id, { 
                     message: chatInfo.message,
                     status: chatInfo.status,
                     time: createdChat.time
                 });
-            //   });
            } else {
-             console.log('Could not find conversation!');
-             console.log("chatInfo before create conversation", chatInfo);
              const createdConversation = await this.createConversation({
                 participants: [new Types.ObjectId(chatInfo.senderId), new Types.ObjectId(chatInfo.receiverId)],
                 lastMessageInfo: {
@@ -50,7 +44,6 @@ export class ChatService {
                     status: chatInfo.status
                 }
              })
-            //  .then(async (createdConversation) => {
                  return await this.createChatInfo({
                     conversationId : createdConversation._id,
                     senderId: new Types.ObjectId(chatInfo.senderId),
@@ -59,7 +52,6 @@ export class ChatService {
                     status: chatInfo.status,
                     ...(chatInfo.time && { time: chatInfo.time })
                  });
-            //  })
 
            }
         } catch(error) {
@@ -72,15 +64,12 @@ export class ChatService {
     }
 
     private async createConversation(conversationInfo: ConversationInfoInterface) {
-        console.log('Creating conversation', conversationInfo);
         const createdConversation = new this.conversationModel(conversationInfo);
         return await createdConversation.save();
     }
 
     private async findConversationBySenderId(senderId: string, receiverId: string) {
-        console.log('findConversationBySenderId', senderId);
         const conversation = await this.conversationModel.findOne({ participants: { $all: [ new Types.ObjectId(senderId), new Types.ObjectId(receiverId) ]} });
-        console.log("conversation", conversation)
         return conversation ? conversation : null;
     }
 
@@ -93,15 +82,28 @@ export class ChatService {
         return await this.conversationModel.findByIdAndUpdate(conversationId, { $set: { lastMessageInfo }}, { new: true }).exec();
     }
 
+    public async getAllConversations() {
+        return await this.conversationModel.find().populate('participants', 'nickname').sort({ 'lastMessageInfo.time': 'desc' });
+    }
+
     public async getConversationsByUserId(userId: string) {
         return await this.conversationModel.find({ participants: { $in: [new Types.ObjectId(userId) ]}})
-                                           .populate('participants', 'nickname')
+                                           .populate('participants', 'nickname');
     }
 
     public async getAllChats({ senderId, receiverId }: { senderId: string; receiverId: string; }) {
-        return await this.chatModel.find({  
-            senderId: new Types.ObjectId(senderId), 
-            receiverId: new Types.ObjectId(receiverId)
+        return await this.chatModel.find({ 
+            $or: [
+                {
+                    senderId: new Types.ObjectId(senderId), 
+                    receiverId: new Types.ObjectId(receiverId)
+                },
+                {
+                    senderId: new Types.ObjectId(receiverId), 
+                    receiverId: new Types.ObjectId(senderId)
+                }
+            ]
+            
         }).sort({ time: 'asc' });
     }
 }
