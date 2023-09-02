@@ -13,7 +13,7 @@ import { ChatService } from './chat.service';
   },
   allowEIO3: true,
   // : true,
-  transports: ['polling']
+  transports: ['websocket']
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
