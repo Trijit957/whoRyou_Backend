@@ -9,6 +9,7 @@ import {
   UseGuards,
   Version,
   Req,
+  Sse,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,11 +17,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
+import { Observable, fromEvent, map, of } from 'rxjs';
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, 
+    private readonly eventEmitter: EventEmitter2) {}
 
   @Version('1')
   @UseGuards(AccessTokenGuard)
@@ -90,5 +94,14 @@ export class UsersController {
   @Delete('deleteUserById/:id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Version('1')
+  @Sse('sse')
+  public sse(): Observable<MessageEvent> {
+    return fromEvent(this.eventEmitter, "price.update")
+        .pipe(map(data => {
+            return { data } as MessageEvent;
+        }));
   }
 }

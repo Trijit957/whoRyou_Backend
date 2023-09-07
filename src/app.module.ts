@@ -7,6 +7,7 @@ import { config } from './config/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 enum EnvironmentEnum {
   DEVELOPMENT = 'development',
@@ -29,6 +30,9 @@ enum EnvironmentEnum {
           uri: configService.internalConfig.mongodb.database.connectionString
         }
       }
+    }),
+    EventEmitterModule.forRoot({
+      delimiter: '.',
     }),
     UsersModule,
     AuthModule,

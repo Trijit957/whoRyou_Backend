@@ -3,11 +3,13 @@ import { Request } from 'express';
 import { ChatService } from './chat.service';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @UseGuards(AccessTokenGuard)
 @Controller('chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(private readonly chatService: ChatService,
+    private eventEmitter: EventEmitter2) {}
 
   @Version('1')
   @Post('create')
@@ -29,5 +31,13 @@ export class ChatController {
   public async getAllChats(@Req() request: Request, @Param('receiverId') receiverId: string) : Promise<any>  {
     const senderId = request.user['sub'];
     return await this.chatService.getAllChats({ senderId, receiverId });
+  }
+
+  @Version('1')
+  @Post('getSse')
+  getSse(@Body() requestBody: any) {
+      console.log(requestBody)
+      this.eventEmitter.emit("price.update", requestBody);
+      return true;
   }
 }
