@@ -26,6 +26,11 @@ async function bootstrap() {
     next();
   });
 
+  app.enableCors({
+    allowedHeaders:"*",
+    origin: "*"
+  });
+
   app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe());
