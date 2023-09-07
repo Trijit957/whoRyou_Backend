@@ -13,10 +13,10 @@ async function bootstrap() {
 
   app.enableVersioning();
 
-  app.enableCors({
-      origin: ['http://localhost:8100'],
-      credentials: true 
-  });
+  // app.enableCors({
+  //     origin: ['http://localhost:8100'],
+  //     credentials: true 
+  // });
 
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
