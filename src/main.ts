@@ -13,9 +13,7 @@ async function bootstrap() {
 
   app.enableVersioning();
 
-  app.enableCors({
-    allowedHeaders: '*'
-  });
+  app.enableCors();
 
   app.setGlobalPrefix('api');
 
