@@ -13,11 +13,7 @@ async function bootstrap() {
 
   app.enableVersioning();
 
-  app.enableCors({
-    allowedHeaders: ['content-type', 'text/event-stream'],
-    origin: 'http://localhost:8100',
-    credentials: true,
-  });
+  app.enableCors();
 
   app.setGlobalPrefix('api');
 
