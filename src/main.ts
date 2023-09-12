@@ -13,7 +13,9 @@ async function bootstrap() {
 
   app.enableVersioning();
 
-  app.enableCors();
+  app.enableCors({
+    allowedHeaders: ['Content-Type', 'text/event-stream']
+  });
 
   app.setGlobalPrefix('api');
 
