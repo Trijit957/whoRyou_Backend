@@ -13,7 +13,11 @@ async function bootstrap() {
 
   app.enableVersioning();
 
-  app.enableCors();
+  app.enableCors({
+    allowedHeaders: ['content-type'],
+    origin: 'http://localhost:8100',
+    credentials: true,
+  });
 
   app.setGlobalPrefix('api');
 
@@ -24,12 +28,12 @@ async function bootstrap() {
     .setDescription('API documentation')
     .setVersion('1.0')
     .addBearerAuth(
-      { 
+      {
         description: `[just text field] Please enter token in following format: Bearer <JWT>`,
         name: 'Authorization',
-        bearerFormat: 'Bearer', 
+        bearerFormat: 'Bearer',
         scheme: 'Bearer',
-        type: 'http', 
+        type: 'http',
         in: 'Header'
       }
     )
